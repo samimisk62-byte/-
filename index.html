@@ -1,1 +1,2248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🍳 مطعمي V2</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,Tahoma,sans-serif;
+ background:#171717;
+ color:#fff;
+ overflow-x:hidden;
+}
+button{
+ border:0;
+ border-radius:13px;
+ padding:10px 14px;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+ touch-action:manipulation;
+}
+.hidden{display:none!important}
+
+/* الرئيسية */
+#home{
+ min-height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:15px;
+ background:
+ radial-gradient(circle at 50% 0,#9b591c,#271507 55%,#080808);
+}
+.homebox{
+ width:min(520px,95vw);
+ background:rgba(0,0,0,.78);
+ padding:25px 18px;
+ border-radius:28px;
+ text-align:center;
+ box-shadow:0 15px 60px #000;
+}
+.homebox h1{
+ font-size:38px;
+ margin:5px;
+}
+.biglogo{font-size:58px}
+.homebox p{color:#ddd}
+.homebox button{
+ display:block;
+ width:92%;
+ margin:8px auto;
+ background:#f39c12;
+ color:#111;
+}
+.homebox .blue{background:#3498db;color:#fff}
+.homebox .green{background:#27ae60;color:#fff}
+
+/* اللعبة */
+#game{
+ min-height:100vh;
+ background:#263238;
+}
+.topbar{
+ position:sticky;
+ top:0;
+ z-index:100;
+ display:flex;
+ flex-wrap:wrap;
+ justify-content:center;
+ gap:5px;
+ padding:7px;
+ background:#101010;
+ box-shadow:0 3px 12px #000;
+}
+.stat{
+ background:#292929;
+ border-radius:10px;
+ padding:7px 9px;
+ font-size:13px;
+}
+.topbar button{
+ padding:7px 10px;
+ font-size:14px;
+ background:#37474f;
+ color:#fff;
+}
+
+/* المطعم */
+#restaurant{
+ position:relative;
+ width:min(1000px,100%);
+ height:760px;
+ margin:auto;
+ overflow:hidden;
+ background:
+ linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+ linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+ #795548;
+ background-size:38px 38px;
+ border-left:12px solid #263238;
+ border-right:12px solid #263238;
+}
+.wall{
+ position:absolute;
+ background:#263238;
+ z-index:2;
+}
+.wall.top{top:0;left:0;right:0;height:25px}
+.wall.bottom{bottom:0;left:0;right:0;height:18px}
+
+/* الصالة */
+.dining{
+ position:absolute;
+ top:35px;
+ left:15px;
+ right:15px;
+ height:310px;
+ background:#9e8b82;
+ border:4px solid #4e342e;
+ border-radius:22px;
+}
+.diningTitle{
+ text-align:center;
+ margin:8px;
+}
+.tables{
+ display:flex;
+ justify-content:space-around;
+ gap:8px;
+ padding:25px 8px;
+}
+.table{
+ position:relative;
+ width:27%;
+ height:125px;
+ border-radius:50%;
+ background:#6d4c41;
+ border:8px solid #4e342e;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:35px;
+}
+.chair{
+ position:absolute;
+ font-size:24px;
+}
+.chair.a{top:-31px}
+.chair.b{bottom:-31px}
+
+/* الزبائن */
+.customer{
+ position:absolute;
+ width:60px;
+ height:75px;
+ z-index:20;
+ font-size:45px;
+ text-align:center;
+ transition:
+ left 1s linear,
+ top 1s linear,
+ opacity .6s,
+ transform .5s;
+}
+.customerName{
+ position:absolute;
+ top:-13px;
+ right:50%;
+ transform:translateX(50%);
+ background:#111;
+ border-radius:8px;
+ padding:2px 5px;
+ white-space:nowrap;
+ font-size:10px;
+}
+.customerBubble{
+ position:absolute;
+ top:-48px;
+ right:50%;
+ transform:translateX(50%);
+ background:#fff;
+ color:#111;
+ border-radius:12px;
+ padding:4px 7px;
+ font-size:11px;
+ white-space:nowrap;
+}
+.patience{
+ position:absolute;
+ width:55px;
+ height:6px;
+ background:#111;
+ border-radius:5px;
+ bottom:-1px;
+ left:3px;
+ overflow:hidden;
+}
+.patience i{
+ display:block;
+ height:100%;
+ width:100%;
+ background:#2ecc71;
+}
+
+/* الكاشير */
+.cashier{
+ position:absolute;
+ top:355px;
+ right:25px;
+ width:180px;
+ height:105px;
+ background:#37474f;
+ border:3px solid #111;
+ border-radius:15px;
+ text-align:center;
+ padding:8px;
+ z-index:10;
+}
+.cashierIcon{font-size:38px}
+
+/* لوحة الطلبات */
+.orders{
+ position:absolute;
+ top:355px;
+ left:25px;
+ width:210px;
+ max-height:150px;
+ overflow:auto;
+ background:rgba(0,0,0,.78);
+ border-radius:15px;
+ padding:8px;
+ z-index:30;
+}
+.orders h3{margin:2px;text-align:center}
+.order{
+ background:#263238;
+ border-radius:9px;
+ margin:4px 0;
+ padding:5px;
+ font-size:12px;
+}
+.order.ready{background:#176b3a}
+.order.paid{background:#624b17}
+
+/* المطبخ */
+.kitchen{
+ position:absolute;
+ bottom:28px;
+ left:15px;
+ right:15px;
+ height:315px;
+ background:#263238;
+ border:5px solid #111;
+ border-radius:22px;
+ padding:8px;
+ z-index:10;
+}
+.kitchen h2{
+ margin:0 0 6px;
+ text-align:center;
+ font-size:20px;
+}
+.stations{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:7px;
+}
+.station{
+ background:#455a64;
+ border:2px solid #607d8b;
+ border-radius:13px;
+ min-height:125px;
+ padding:6px;
+ text-align:center;
+}
+.stationIcon{font-size:35px}
+.station button{
+ display:block;
+ width:100%;
+ padding:6px;
+ margin:4px 0;
+ font-size:12px;
+ background:#f1c40f;
+ color:#111;
+}
+#chef{
+ position:absolute;
+ bottom:8px;
+ left:48%;
+ font-size:50px;
+ z-index:50;
+ transition:left .7s ease,transform .3s;
+}
+#chef.cooking{
+ transform:scale(1.15) rotate(-3deg);
+}
+#cookText{
+ text-align:center;
+ margin-top:4px;
+ font-size:14px;
+}
+.progress{
+ height:12px;
+ background:#111;
+ border-radius:10px;
+ overflow:hidden;
+ margin:5px auto;
+ max-width:500px;
+}
+.progress i{
+ display:block;
+ width:0;
+ height:100%;
+ background:#2ecc71;
+}
+
+/* الطبق المتحرك */
+#movingDish{
+ position:absolute;
+ display:none;
+ z-index:60;
+ font-size:40px;
+ transition:
+ left 1s ease,
+ top 1s ease;
+}
+
+/* شريط الرسائل */
+.message{
+ position:absolute;
+ bottom:350px;
+ left:50%;
+ transform:translateX(-50%);
+ background:rgba(0,0,0,.82);
+ border-radius:12px;
+ padding:8px 15px;
+ z-index:80;
+ font-size:13px;
+ max-width:90%;
+ text-align:center;
+}
+
+/* النافذة */
+.modal{
+ position:fixed;
+ inset:0;
+ z-index:500;
+ background:rgba(0,0,0,.82);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+}
+.modalbox{
+ width:min(520px,96vw);
+ max-height:90vh;
+ overflow:auto;
+ background:#263238;
+ border-radius:22px;
+ padding:18px;
+ box-shadow:0 15px 60px #000;
+}
+.modalbox h2{text-align:center}
+.modalbox button{
+ margin:4px;
+ background:#f39c12;
+}
+.card{
+ background:#37474f;
+ border-radius:12px;
+ padding:10px;
+ margin:7px 0;
+}
+.financial{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
+}
+.financial div{
+ background:#37474f;
+ border-radius:12px;
+ padding:12px;
+ text-align:center;
+}
+.shoprow{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:#37474f;
+ padding:9px;
+ margin:7px 0;
+ border-radius:12px;
+}
+.shoprow button{
+ background:#27ae60;
+ color:white;
+}
+.rule{
+ background:#37474f;
+ padding:9px;
+ margin:6px 0;
+ border-radius:10px;
+}
+.good{color:#2ecc71}
+.bad{color:#e74c3c}
+
+@media(max-width:650px){
+ #restaurant{height:760px}
+ .stations{grid-template-columns:repeat(2,1fr)}
+ .station{min-height:100px}
+ .stationIcon{font-size:30px}
+ .cashier{
+  width:145px;
+  height:90px;
+  right:10px;
+ }
+ .orders{
+  width:175px;
+  left:10px;
+ }
+ #chef{font-size:45px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HOME ================= -->
+<section id="home">
+ <div class="homebox">
+
+  <div class="biglogo">🍳👨‍🍳🍔</div>
+
+  <h1>مطعمي</h1>
+
+  <p>
+   لعبة إدارة مطعم ومطبخ حقيقية
+  </p>
+
+  <button onclick="startGame()">
+   ▶️ بداية اللعبة
+  </button>
+
+  <button class="blue" onclick="showRules()">
+   📜 قواعد اللعبة
+  </button>
+
+  <button class="green" onclick="showShop()">
+   🛒 متجر المطعم
+  </button>
+
+  <button onclick="toggleMusic()">
+   🔊 الموسيقى:
+   <span id="homeMusic">تشغيل</span>
+  </button>
+
+ </div>
+</section>
+
+
+<!-- ================= GAME ================= -->
+<section id="game" class="hidden">
+
+ <div class="topbar">
+
+  <div class="stat">
+   💰 <span id="money">100</span>
+  </div>
+
+  <div class="stat">
+   ⭐ <span id="stars">0</span>
+  </div>
+
+  <div class="stat">
+   🏆 مستوى <span id="level">1</span>
+  </div>
+
+  <div class="stat">
+   🧾 طلبات <span id="ordersCount">0</span>
+  </div>
+
+  <div class="stat">
+   👥 مخدوم <span id="served">0</span>
+  </div>
+
+  <div class="stat">
+   ⏱️ <span id="clock">00:00</span>
+  </div>
+
+  <button onclick="toggleMusic()">🔊</button>
+
+  <button onclick="showFinance()">🏦</button>
+
+  <button onclick="showShop()">🛒</button>
+
+  <button onclick="toggleRestaurant()">
+   🔓 <span id="lockText">المطعم مفتوح</span>
+  </button>
+
+  <button onclick="finishGame()">🏁 نهاية</button>
+
+ </div>
+
+
+ <div id="restaurant">
+
+  <div class="wall top"></div>
+  <div class="wall bottom"></div>
+
+  <!-- الصالة -->
+  <div class="dining">
+
+   <h2 class="diningTitle">
+    🍽️ صالة المطعم
+   </h2>
+
+   <div class="tables">
+
+    <div class="table" id="table0">
+     🍽️
+     <span class="chair a">💺</span>
+     <span class="chair b">💺</span>
+    </div>
+
+    <div class="table" id="table1">
+     🍽️
+     <span class="chair a">💺</span>
+     <span class="chair b">💺</span>
+    </div>
+
+    <div class="table" id="table2">
+     🍽️
+     <span class="chair a">💺</span>
+     <span class="chair b">💺</span>
+    </div>
+
+   </div>
+  </div>
+
+
+  <!-- الطلبات -->
+  <div class="orders">
+   <h3>📋 الطلبات</h3>
+   <div id="ordersList">
+    لا توجد طلبات
+   </div>
+  </div>
+
+
+  <!-- الكاشير -->
+  <div class="cashier">
+   <div class="cashierIcon">💵</div>
+   <b>الكاشير</b>
+   <div id="cashierText">
+    في انتظار الطلب
+   </div>
+  </div>
+
+
+  <!-- رسالة -->
+  <div class="message" id="message">
+   👨‍🍳 الشيف جاهز للعمل
+  </div>
+
+
+  <!-- الطبق -->
+  <div id="movingDish">🍽️</div>
+
+
+  <!-- المطبخ -->
+  <div class="kitchen">
+
+   <h2>👨‍🍳 المطبخ</h2>
+
+   <div class="stations">
+
+    <div class="station">
+     <div class="stationIcon">🔥</div>
+     <b>البوتاجاز</b>
+
+     <button onclick="cook('burger')">
+      🍔 برجر
+     </button>
+
+     <button onclick="cook('chicken')">
+      🍗 دجاج
+     </button>
+    </div>
+
+
+    <div class="station">
+     <div class="stationIcon">🍕</div>
+     <b>الفرن</b>
+
+     <button onclick="cook('pizza')">
+      🍕 بيتزا
+     </button>
+
+     <button onclick="cook('pie')">
+      🥧 فطيرة
+     </button>
+    </div>
+
+
+    <div class="station">
+     <div class="stationIcon">🔪</div>
+     <b>التحضير</b>
+
+     <button onclick="cook('salad')">
+      🥗 سلطة
+     </button>
+
+     <button onclick="cook('juice')">
+      🧃 عصير
+     </button>
+    </div>
+
+
+    <div class="station">
+     <div class="stationIcon">☕</div>
+     <b>المشروبات</b>
+
+     <button onclick="cook('coffee')">
+      ☕ قهوة
+     </button>
+
+     <button onclick="serveFood()">
+      🍽️ تقديم
+     </button>
+    </div>
+
+   </div>
+
+
+   <div id="chef">👨‍🍳</div>
+
+   <div id="cookText">
+    الشيف جاهز
+   </div>
+
+   <div class="progress">
+    <i id="progress"></i>
+   </div>
+
+  </div>
+
+ </div>
+
+</section>
+
+
+<!-- MODAL -->
+<div id="modal" class="modal hidden">
+ <div class="modalbox" id="modalBox"></div>
+</div>
+
+
+<script>
+/* =====================================================
+   بيانات اللعبة
+===================================================== */
+
+let running=false;
+let restaurantOpen=true;
+
+let money=100;
+let stars=0;
+let level=1;
+let served=0;
+let totalOrders=0;
+
+let seconds=0;
+
+let customers=[];
+let orders=[];
+
+let cooking=false;
+let currentFood=null;
+
+let gameTimer=null;
+let cookTimer=null;
+
+let musicOn=true;
+let audioCtx=null;
+let musicTimer=null;
+
+let financial={
+ sales:0,
+ expenses:0,
+ tips:0,
+ bonuses:0
+};
+
+let upgrades={
+ speed:0,
+ quality:0,
+ cashier:0,
+ kitchen:0
+};
+
+
+const foods={
+
+ burger:{
+  name:"🍔 برجر",
+  price:35,
+  time:5
+ },
+
+ chicken:{
+  name:"🍗 دجاج",
+  price:45,
+  time:6
+ },
+
+ pizza:{
+  name:"🍕 بيتزا",
+  price:50,
+  time:7
+ },
+
+ pie:{
+  name:"🥧 فطيرة",
+  price:40,
+  time:5
+ },
+
+ salad:{
+  name:"🥗 سلطة",
+  price:25,
+  time:3
+ },
+
+ juice:{
+  name:"🧃 عصير",
+  price:20,
+  time:2
+ },
+
+ coffee:{
+  name:"☕ قهوة",
+  price:18,
+  time:2
+ }
+};
+
+
+const names=[
+ "أحمد","محمد","علي","عمر",
+ "سارة","مريم","نور","منى",
+ "خالد","ياسمين","حسن","ريم"
+];
+
+
+/* =====================================================
+   الصوت
+===================================================== */
+
+function initAudio(){
+
+ if(!audioCtx){
+
+  try{
+   audioCtx=
+    new(window.AudioContext||
+    window.webkitAudioContext)();
+  }catch(e){}
+ }
+
+ if(audioCtx &&
+    audioCtx.state==="suspended"){
+
+  audioCtx.resume();
+ }
+}
+
+
+function sound(freq=500,duration=.12){
+
+ if(!musicOn)return;
+
+ initAudio();
+
+ if(!audioCtx)return;
+
+ let osc=audioCtx.createOscillator();
+ let gain=audioCtx.createGain();
+
+ osc.type="sine";
+ osc.frequency.value=freq;
+
+ gain.gain.setValueAtTime(
+  .07,
+  audioCtx.currentTime
+ );
+
+ gain.gain.exponentialRampToValueAtTime(
+  .001,
+  audioCtx.currentTime+duration
+ );
+
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
+
+ osc.start();
+
+ osc.stop(
+  audioCtx.currentTime+duration
+ );
+}
+
+
+function toggleMusic(){
+
+ musicOn=!musicOn;
+
+ document.getElementById(
+  "homeMusic"
+ ).textContent=
+  musicOn?"تشغيل":"إيقاف";
+
+ if(musicOn){
+  sound(700,.12);
+  startMusic();
+ }else{
+  stopMusic();
+ }
+}
+
+
+function startMusic(){
+
+ stopMusic();
+
+ if(!musicOn)return;
+
+ musicTimer=setInterval(()=>{
+
+  if(!running)return;
+
+  sound(262,.06);
+
+  setTimeout(()=>{
+   if(musicOn)sound(330,.06);
+  },120);
+
+ },2600);
+}
+
+
+function stopMusic(){
+
+ if(musicTimer){
+  clearInterval(musicTimer);
+  musicTimer=null;
+ }
+}
+
+
+/* =====================================================
+   بداية اللعبة
+===================================================== */
+
+function startGame(){
+
+ initAudio();
+
+ sound(700,.15);
+
+ running=true;
+ restaurantOpen=true;
+
+ money=100;
+ stars=0;
+ level=1;
+ served=0;
+ totalOrders=0;
+ seconds=0;
+
+ customers=[];
+ orders=[];
+
+ financial={
+  sales:0,
+  expenses:0,
+  tips:0,
+  bonuses:0
+ };
+
+ document.getElementById("home")
+  .classList.add("hidden");
+
+ document.getElementById("game")
+  .classList.remove("hidden");
+
+ updateUI();
+
+ startTimers();
+ startMusic();
+
+ addCustomer();
+
+ setTimeout(addCustomer,3500);
+ setTimeout(addCustomer,7000);
+
+ message("🍽️ المطعم فتح أبوابه!");
+}
+
+
+function startTimers(){
+
+ clearInterval(gameTimer);
+
+ gameTimer=setInterval(()=>{
+
+  if(!running)return;
+
+  seconds++;
+
+  document.getElementById("clock")
+   .textContent=formatTime(seconds);
+
+  updateLevel();
+
+ },1000);
+
+
+ setIntervalCustomer();
+}
+
+
+function setIntervalCustomer(){
+
+ setInterval(()=>{
+
+  if(!running)return;
+
+  if(!restaurantOpen)return;
+
+  if(customers.length>=3)return;
+
+  addCustomer();
+
+ },8500);
+}
+
+
+function formatTime(s){
+
+ let m=Math.floor(s/60);
+ let x=s%60;
+
+ return String(m).padStart(2,"0")+
+ ":"+
+ String(x).padStart(2,"0");
+}
+
+
+/* =====================================================
+   حركة الزبون
+===================================================== */
+
+function addCustomer(){
+
+ if(!running || !restaurantOpen)return;
+
+ if(customers.length>=3)return;
+
+ let id=
+  Date.now()+Math.random();
+
+ let foodKeys=
+  Object.keys(foods);
+
+ let food=
+  foodKeys[
+   Math.floor(
+    Math.random()*foodKeys.length
+   )
+  ];
+
+ let c={
+
+  id:id,
+
+  name:
+   names[
+    Math.floor(
+     Math.random()*names.length
+    )
+   ],
+
+  food:food,
+
+  table:customers.length,
+
+  patience:100,
+
+  state:"enter",
+
+  paid:false
+
+ };
+
+ customers.push(c);
+
+ drawCustomer(c);
+
+ sound(430,.07);
+
+ /* دخول من الباب */
+
+ let el=
+  document.getElementById(
+   "customer-"+id
+  );
+
+ el.style.left="50%";
+ el.style.top="335px";
+
+ setTimeout(()=>{
+
+  if(!customers.includes(c))return;
+
+  c.state="walking";
+
+  positionCustomer(c);
+
+ },400);
+
+ /* الجلوس */
+
+ setTimeout(()=>{
+
+  if(!customers.includes(c))return;
+
+  c.state="waiting";
+
+  positionCustomer(c);
+
+  createOrder(c);
+
+  message(
+   "📋 "+c.name+
+   " طلب "+foods[c.food].name
+  );
+
+ },1500);
+}
+
+
+function drawCustomer(c){
+
+ let el=document.createElement("div");
+
+ el.className="customer";
+
+ el.id="customer-"+c.id;
+
+ el.innerHTML=`
+
+  <div class="customerName">
+   ${c.name}
+  </div>
+
+  <div class="customerBubble">
+   💭 ${foods[c.food].name}
+  </div>
+
+  🧑
+
+  <div class="patience">
+   <i></i>
+  </div>
+ `;
+
+ document
+  .getElementById("restaurant")
+  .appendChild(el);
+}
+
+
+function positionCustomer(c){
+
+ let el=
+  document.getElementById(
+   "customer-"+c.id
+  );
+
+ if(!el)return;
+
+ let pos=[
+  {left:"18%",top:"150px"},
+  {left:"48%",top:"150px"},
+  {left:"78%",top:"150px"}
+ ];
+
+ let p=
+  pos[c.table]||pos[0];
+
+ el.style.left=p.left;
+ el.style.top=p.top;
+}
+
+
+function createOrder(c){
+
+ let order={
+
+  id:Date.now()+Math.random(),
+
+  customerId:c.id,
+
+  food:c.food,
+
+  cooked:false,
+
+  served:false,
+
+  paid:false,
+
+  price:foods[c.food].price
+
+ };
+
+ orders.push(order);
+
+ totalOrders++;
+
+ renderOrders();
+
+ updateUI();
+}
+
+
+/* =====================================================
+   انتظار الزبون
+===================================================== */
+
+setInterval(()=>{
+
+ if(!running)return;
+
+ customers.forEach(c=>{
+
+  if(c.state!=="waiting")return;
+
+  c.patience-=1.5;
+
+  let el=
+   document.getElementById(
+    "customer-"+c.id
+   );
+
+  if(el){
+
+   let bar=
+    el.querySelector(
+     ".patience i"
+    );
+
+   if(bar){
+
+    bar.style.width=
+     Math.max(0,c.patience)+"%";
+   }
+  }
+
+  if(c.patience<=0){
+
+   customerLeave(c,false);
+
+  }
+
+ });
+
+},1000);
+
+
+/* =====================================================
+   الطبخ
+===================================================== */
+
+function cook(food){
+
+ if(!running)return;
+
+ if(!restaurantOpen){
+
+  message("🔒 المطعم مغلق");
+
+  sound(160,.1);
+
+  return;
+ }
+
+ if(cooking){
+
+  message("👨‍🍳 الشيف مشغول بطلب آخر");
+
+  sound(180,.1);
+
+  return;
+ }
+
+ let order=
+  orders.find(o=>
+   o.food===food &&
+   !o.cooked &&
+   !o.served
+  );
+
+ if(!order){
+
+  message(
+   "📋 لا يوجد طلب "+foods[food].name
+  );
+
+  sound(180,.1);
+
+  return;
+ }
+
+ currentFood=food;
+ cooking=true;
+
+ let chef=
+  document.getElementById("chef");
+
+ chef.classList.add("cooking");
+
+ /* حركة الشيف لمحطة الطبخ */
+
+ if(food==="burger"||
+    food==="chicken"){
+
+  chef.style.left="10%";
+
+ }else if(food==="pizza"||
+          food==="pie"){
+
+  chef.style.left="35%";
+
+ }else{
+
+  chef.style.left="72%";
+ }
+
+ let base=foods[food].time;
+
+ let duration=
+  Math.max(
+   1,
+   base-upgrades.speed
+  );
+
+ let progress=0;
+
+ document.getElementById(
+  "cookText"
+ ).textContent=
+  "🔪 تحضير "+foods[food].name;
+
+ message(
+  "👨‍🍳 الشيف بدأ تحضير "+
+  foods[food].name
+ );
+
+ sound(500,.1);
+
+ cookTimer=setInterval(()=>{
+
+  progress+=100/(duration*10);
+
+  document.getElementById(
+   "progress"
+  ).style.width=
+   Math.min(100,progress)+"%";
+
+  if(progress>15 &&
+     progress<30){
+
+   document.getElementById(
+    "cookText"
+   ).textContent=
+    "🔥 الطبخ على النار...";
+  }
+
+  if(progress>60){
+
+   document.getElementById(
+    "cookText"
+   ).textContent=
+    "🍽️ تجهيز الطبق...";
+  }
+
+  if(Math.random()<.05){
+   sound(450,.03);
+  }
+
+  if(progress>=100){
+
+   clearInterval(cookTimer);
+
+   cooking=false;
+
+   order.cooked=true;
+
+   chef.classList.remove("cooking");
+
+   chef.style.left="48%";
+
+   document.getElementById(
+    "cookText"
+   ).textContent=
+    "✅ الطلب جاهز للتقديم";
+
+   document.getElementById(
+    "progress"
+   ).style.width="100%";
+
+   message(
+    "🔔 "+foods[food].name+
+    " جاهز! اضغط تقديم"
+   );
+
+   sound(880,.14);
+   setTimeout(()=>{
+    sound(1100,.12);
+   },130);
+
+   renderOrders();
+  }
+
+ },100);
+}
+
+
+/* =====================================================
+   حركة الطبق والتقديم
+===================================================== */
+
+function serveFood(){
+
+ if(!running)return;
+
+ if(!currentFood){
+
+  message("🍽️ لا يوجد طبق جاهز");
+
+  sound(180,.1);
+
+  return;
+ }
+
+ let order=
+  orders.find(o=>
+   o.food===currentFood &&
+   o.cooked &&
+   !o.served
+  );
+
+ if(!order){
+
+  currentFood=null;
+
+  return;
+ }
+
+ let c=
+  customers.find(
+   x=>x.id===order.customerId
+  );
+
+ if(!c){
+
+  currentFood=null;
+
+  return;
+ }
+
+ /* الطبق يظهر عند الشيف */
+
+ let dish=
+  document.getElementById(
+   "movingDish"
+  );
+
+ dish.style.display="block";
+ dish.style.left="48%";
+ dish.style.top="535px";
+
+ message(
+  "🍽️ الشيف يحمل الطبق إلى "+
+  c.name
+ );
+
+ sound(650,.1);
+
+ /* تحريك الطبق إلى الزبون */
+
+ setTimeout(()=>{
+
+  let pos=[
+   {left:"18%",top:"150px"},
+   {left:"48%",top:"150px"},
+   {left:"78%",top:"150px"}
+  ][c.table];
+
+  dish.style.left=pos.left;
+  dish.style.top=pos.top;
+
+ },100);
+
+
+ setTimeout(()=>{
+
+  dish.style.display="none";
+
+  order.served=true;
+
+  c.state="eating";
+
+  let tip=
+   Math.floor(
+    c.patience/20
+   )*2;
+
+  let quality=
+   upgrades.quality*4;
+
+  order.tip=tip;
+
+  order.quality=quality;
+
+  financial.tips+=tip;
+
+  financial.bonuses+=quality;
+
+  money+=tip+quality;
+
+  stars+=
+   Math.max(
+    1,
+    Math.floor(c.patience/25)
+   );
+
+  message(
+   "😋 "+c.name+
+   " استلم الطلب!"+
+   " +"+tip+
+   " بقشيش"
+  );
+
+  sound(900,.12);
+
+  renderOrders();
+
+  updateUI();
+
+  /* الزبون يأكل */
+
+  let el=
+   document.getElementById(
+    "customer-"+c.id
+   );
+
+  if(el){
+
+   el.querySelector(
+    ".customerBubble"
+   ).textContent="😋 لذيذ!";
+  }
+
+  /* بعد الأكل يذهب للكاشير */
+
+  setTimeout(()=>{
+
+   goToCashier(c,order);
+
+  },2500);
+
+ },1200);
+
+ currentFood=null;
+}
+
+
+/* =====================================================
+   الكاشير
+===================================================== */
+
+function goToCashier(c,order){
+
+ if(!customers.includes(c))return;
+
+ c.state="cashier";
+
+ let el=
+  document.getElementById(
+   "customer-"+c.id
+  );
+
+ if(el){
+
+  el.style.left="78%";
+  el.style.top="390px";
+ }
+
+ document.getElementById(
+  "cashierText"
+ ).textContent=
+  "💳 "+c.name+
+  " يحاسب...";
+
+ message(
+  "💵 "+c.name+
+  " وصل إلى الكاشير"
+ );
+
+ sound(600,.08);
+
+ setTimeout(()=>{
+
+  if(!customers.includes(c))return;
+
+  payOrder(c,order);
+
+ },1500);
+}
+
+
+function payOrder(c,order){
+
+ if(order.paid)return;
+
+ order.paid=true;
+ c.paid=true;
+
+ let price=order.price;
+
+ let cashierBonus=
+  upgrades.cashier*2;
+
+ let final=
+  price+cashierBonus;
+
+ money+=final;
+
+ financial.sales+=price;
+ financial.bonuses+=cashierBonus;
+
+ served++;
+
+ c.state="leaving";
+
+ document.getElementById(
+  "cashierText"
+ ).textContent=
+  "💰 تم تحصيل "+
+  final+
+  " جنيه";
+
+ message(
+  "🧾 تم دفع الفاتورة: "+
+  final+
+  " جنيه"
+ );
+
+ sound(1000,.14);
+ setTimeout(()=>{
+  sound(1200,.1);
+ },120);
+
+ renderOrders();
+ updateUI();
+
+ setTimeout(()=>{
+
+  customerLeave(c,true);
+
+ },1000);
+}
+
+
+/* =====================================================
+   مغادرة الزبون
+===================================================== */
+
+function customerLeave(c,servedOK){
+
+ c.state="leaving";
+
+ let el=
+  document.getElementById(
+   "customer-"+c.id
+  );
+
+ if(el){
+
+  el.style.left="50%";
+  el.style.top="680px";
+  el.style.opacity="0";
+ }
+
+ if(!servedOK){
+
+  message(
+   "😞 "+c.name+
+   " غادر بسبب طول الانتظار"
+  );
+
+  sound(160,.2);
+
+ }else{
+
+  message(
+   "👋 "+c.name+
+   " شكرًا لزيارتك"
+  );
+
+  sound(750,.08);
+ }
+
+ orders=
+  orders.filter(
+   o=>o.customerId!==c.id
+  );
+
+ setTimeout(()=>{
+
+  if(el)el.remove();
+
+  customers=
+   customers.filter(
+    x=>x.id!==c.id
+   );
+
+  rearrangeCustomers();
+
+  renderOrders();
+
+ },900);
+}
+
+
+function rearrangeCustomers(){
+
+ customers.forEach((c,i)=>{
+
+  c.table=i;
+
+  if(
+   c.state==="waiting"||
+   c.state==="eating"
+  ){
+   positionCustomer(c);
+  }
+ });
+}
+
+
+/* =====================================================
+   الطلبات
+===================================================== */
+
+function renderOrders(){
+
+ let box=
+  document.getElementById(
+   "ordersList"
+  );
+
+ if(!orders.length){
+
+  box.innerHTML=
+   "لا توجد طلبات";
+
+  return;
+ }
+
+ box.innerHTML="";
+
+ orders.forEach(o=>{
+
+  let c=
+   customers.find(
+    x=>x.id===o.customerId
+   );
+
+  if(!c)return;
+
+  let state=
+   o.paid
+   ?"💰 مدفوع"
+   :o.served
+   ?"🍽️ وصل للزبون"
+   :o.cooked
+   ?"🔔 جاهز"
+   :"⏳ قيد الطبخ";
+
+  let div=
+   document.createElement("div");
+
+  div.className=
+   "order "+
+   (o.cooked?"ready":"")+
+   (o.paid?" paid":"");
+
+  div.innerHTML=`
+   <b>${c.name}</b><br>
+   ${foods[o.food].name}<br>
+   💵 ${o.price} جنيه<br>
+   ${state}
+  `;
+
+  box.appendChild(div);
+ });
+}
+
+
+/* =====================================================
+   المستوى والجوائز
+===================================================== */
+
+function updateLevel(){
+
+ let newLevel=
+  Math.floor(served/5)+1;
+
+ if(newLevel>level){
+
+  level=newLevel;
+
+  let reward=
+   50+(level*20);
+
+  money+=reward;
+  stars+=10;
+
+  financial.bonuses+=reward;
+
+  sound(700,.15);
+
+  setTimeout(()=>{
+   sound(900,.15);
+  },150);
+
+  alert(
+   "🎉 مبروك!\n\n"+
+   "🏆 وصلت للمستوى "+
+   level+
+   "\n\n"+
+   "🎁 مكافأة "+
+   reward+
+   " جنيه"
+  );
+
+  updateUI();
+ }
+}
+
+
+/* =====================================================
+   قفل وفتح المطعم
+===================================================== */
+
+function toggleRestaurant(){
+
+ restaurantOpen=
+  !restaurantOpen;
+
+ let txt=
+  document.getElementById(
+   "lockText"
+  );
+
+ if(restaurantOpen){
+
+  txt.textContent=
+   "المطعم مفتوح";
+
+  message(
+   "🔓 المطعم مفتوح — الزبائن يدخلون"
+  );
+
+  sound(700,.1);
+
+ }else{
+
+  txt.textContent=
+   "المطعم مغلق";
+
+  message(
+   "🔒 المطعم مغلق — لن يدخل زبائن جدد"
+  );
+
+  sound(300,.1);
+ }
+}
+
+
+/* =====================================================
+   المركز المالي
+===================================================== */
+
+function showFinance(){
+
+ let expenses=financial.expenses;
+
+ let net=
+  financial.sales+
+  financial.tips+
+  financial.bonuses-
+  expenses;
+
+ openModal(`
+  <h2>🏦 المركز المالي</h2>
+
+  <div class="financial">
+
+   <div>
+    🧾 المبيعات<br>
+    <b>${financial.sales}</b> جنيه
+   </div>
+
+   <div>
+    💵 البقشيش<br>
+    <b>${financial.tips}</b> جنيه
+   </div>
+
+   <div>
+    🎁 المكافآت<br>
+    <b>${financial.bonuses}</b> جنيه
+   </div>
+
+   <div>
+    💸 المصروفات<br>
+    <b>${expenses}</b> جنيه
+   </div>
+
+   <div>
+    🏦 صافي الربح<br>
+    <b class="${net>=0?"good":"bad"}">
+     ${net}
+    </b> جنيه
+   </div>
+
+   <div>
+    💰 الخزنة<br>
+    <b>${money}</b> جنيه
+   </div>
+
+  </div>
+
+  <div class="card">
+   👥 الزبائن المخدومون:
+   <b>${served}</b>
+  </div>
+
+  <div class="card">
+   🧾 إجمالي الطلبات:
+   <b>${totalOrders}</b>
+  </div>
+
+  <div class="card">
+   ⭐ النجوم:
+   <b>${stars}</b>
+  </div>
+
+  <button onclick="closeModal()">
+   إغلاق
+  </button>
+ `);
+}
+
+
+/* =====================================================
+   المتجر
+===================================================== */
+
+function showShop(){
+
+ openModal(`
+  <h2>🛒 متجر المطعم</h2>
+
+  <p>
+   💰 الخزنة:
+   <b>${money}</b> جنيه
+  </p>
+
+  <div class="shoprow">
+   <span>
+    ⚡ سرعة الشيف<br>
+    المستوى ${upgrades.speed}
+   </span>
+
+   <button onclick="buyUpgrade('speed')">
+    💰 ${100+upgrades.speed*75}
+   </button>
+  </div>
+
+  <div class="shoprow">
+   <span>
+    ⭐ جودة الطعام<br>
+    المستوى ${upgrades.quality}
+   </span>
+
+   <button onclick="buyUpgrade('quality')">
+    💰 ${120+upgrades.quality*80}
+   </button>
+  </div>
+
+  <div class="shoprow">
+   <span>
+    💵 الكاشير<br>
+    المستوى ${upgrades.cashier}
+   </span>
+
+   <button onclick="buyUpgrade('cashier')">
+    💰 ${150+upgrades.cashier*100}
+   </button>
+  </div>
+
+  <div class="shoprow">
+   <span>
+    🔥 تطوير المطبخ<br>
+    المستوى ${upgrades.kitchen}
+   </span>
+
+   <button onclick="buyUpgrade('kitchen')">
+    💰 ${180+upgrades.kitchen*120}
+   </button>
+  </div>
+
+  <button onclick="closeModal()">
+   إغلاق
+  </button>
+ `);
+}
+
+
+function buyUpgrade(type){
+
+ let price;
+
+ if(type==="speed")
+  price=100+upgrades.speed*75;
+
+ if(type==="quality")
+  price=120+upgrades.quality*80;
+
+ if(type==="cashier")
+  price=150+upgrades.cashier*100;
+
+ if(type==="kitchen")
+  price=180+upgrades.kitchen*120;
+
+ if(money<price){
+
+  sound(150,.1);
+
+  alert("💸 لا يوجد رصيد كافٍ.");
+
+  return;
+ }
+
+ money-=price;
+
+ financial.expenses+=price;
+
+ upgrades[type]++;
+
+ sound(900,.15);
+
+ showShop();
+
+ updateUI();
+}
+
+
+/* =====================================================
+   القواعد
+===================================================== */
+
+function showRules(){
+
+ openModal(`
+  <h2>📜 قواعد مطعمي</h2>
+
+  <div class="rule">
+   1️⃣ افتح المطعم ليستطيع الزبائن الدخول.
+  </div>
+
+  <div class="rule">
+   2️⃣ الزبون يدخل المطعم ويتجه إلى طاولته.
+  </div>
+
+  <div class="rule">
+   3️⃣ لكل زبون طلب مختلف.
+  </div>
+
+  <div class="rule">
+   4️⃣ راقب لوحة الطلبات لمعرفة المطلوب.
+  </div>
+
+  <div class="rule">
+   5️⃣ الشيف يتحرك إلى محطة الطبخ.
+  </div>
+
+  <div class="rule">
+   6️⃣ الطبق يحتاج وقتًا حتى يصبح جاهزًا.
+  </div>
+
+  <div class="rule">
+   7️⃣ اضغط «تقديم» لنقل الطبق إلى الزبون.
+  </div>
+
+  <div class="rule">
+   8️⃣ الزبون ينتظر، وإذا طال الانتظار يغادر.
+  </div>
+
+  <div class="rule">
+   9️⃣ بعد الأكل يذهب الزبون إلى الكاشير.
+  </div>
+
+  <div class="rule">
+   🔟 الكاشير يحسب الفاتورة ويضيف المال للخزنة.
+  </div>
+
+  <div class="rule">
+   ⭐ السرعة تمنحك بقشيشًا ونجومًا أكثر.
+  </div>
+
+  <div class="rule">
+   🛒 استخدم الأرباح لتطوير المطعم.
+  </div>
+
+  <div class="rule">
+   🏦 راقب المركز المالي لمعرفة المبيعات والمصروفات وصافي الربح.
+  </div>
+
+  <div class="rule">
+   🔒 يمكنك قفل المطعم لمنع دخول زبائن جدد، مع استمرار خدمة الموجودين.
+  </div>
+
+  <button onclick="closeModal()">
+   رجوع
+  </button>
+ `);
+}
+
+
+/* =====================================================
+   إنهاء الجولة
+===================================================== */
+
+function finishGame(){
+
+ if(!running)return;
+
+ running=false;
+
+ clearInterval(gameTimer);
+
+ if(cookTimer){
+  clearInterval(cookTimer);
+ }
+
+ stopMusic();
+
+ let net=
+  financial.sales+
+  financial.tips+
+  financial.bonuses-
+  financial.expenses;
+
+ sound(523,.15);
+
+ setTimeout(()=>{
+  sound(659,.15);
+ },150);
+
+ setTimeout(()=>{
+  sound(784,.18);
+ },300);
+
+ openModal(`
+  <h2>🏁 نهاية الجولة</h2>
+
+  <div class="card">
+   👥 الزبائن المخدومون:
+   <b>${served}</b>
+  </div>
+
+  <div class="card">
+   🧾 الطلبات:
+   <b>${totalOrders}</b>
+  </div>
+
+  <div class="card">
+   ⭐ النجوم:
+   <b>${stars}</b>
+  </div>
+
+  <div class="card">
+   🏆 المستوى:
+   <b>${level}</b>
+  </div>
+
+  <div class="card">
+   🏦 صافي الربح:
+   <b>${net}</b> جنيه
+  </div>
+
+  <div class="card">
+   💰 الخزنة:
+   <b>${money}</b> جنيه
+  </div>
+
+  <button onclick="newGame()">
+   🔄 لعبة جديدة
+  </button>
+
+  <button onclick="goHome()">
+   🏠 القائمة الرئيسية
+  </button>
+ `);
+}
+
+
+/* =====================================================
+   إعادة اللعب
+===================================================== */
+
+function newGame(){
+
+ closeModal();
+
+ document
+  .querySelectorAll(".customer")
+  .forEach(x=>x.remove());
+
+ startGame();
+}
+
+
+function goHome(){
+
+ closeModal();
+
+ running=false;
+
+ clearInterval(gameTimer);
+
+ if(cookTimer){
+  clearInterval(cookTimer);
+ }
+
+ stopMusic();
+
+ document
+  .getElementById("game")
+  .classList.add("hidden");
+
+ document
+  .getElementById("home")
+  .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   الواجهة
+===================================================== */
+
+function updateUI(){
+
+ document.getElementById(
+  "money"
+ ).textContent=money;
+
+ document.getElementById(
+  "stars"
+ ).textContent=stars;
+
+ document.getElementById(
+  "level"
+ ).textContent=level;
+
+ document.getElementById(
+  "served"
+ ).textContent=served;
+
+ document.getElementById(
+  "ordersCount"
+ ).textContent=orders.length;
+}
+
+
+function message(text){
+
+ document.getElementById(
+  "message"
+ ).textContent=text;
+}
+
+
+/* =====================================================
+   النوافذ
+===================================================== */
+
+function openModal(html){
+
+ document.getElementById(
+  "modalBox"
+ ).innerHTML=html;
+
+ document.getElementById(
+  "modal"
+ ).classList.remove("hidden");
+}
+
+
+function closeModal(){
+
+ document.getElementById(
+  "modal"
+ ).classList.add("hidden");
+}
+
+
+/* =====================================================
+   البداية
+===================================================== */
+
+document.getElementById(
+ "homeMusic"
+).textContent=
+ musicOn?"تشغيل":"إيقاف";
+
+</script>
+
+</body>
+</html>
